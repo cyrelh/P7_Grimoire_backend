@@ -1,7 +1,7 @@
 // Importe Express avec commande require pour importer express
 const express = require('express');
 
-// Crée une application express avec la méthode express
+// Crée une application express app avec la méthode express
 const app = express();
 
 
