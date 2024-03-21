@@ -1,8 +1,29 @@
-// Importe Express avec commande require pour importer express
+require('dotenv').config(); // prio n°1
+
+// Importation Express avec commande require pour importer express
 const express = require('express');
 
-// Crée une application express app avec la méthode express
+//Importation le module mongoose
+const mongoose = require('mongoose');
+
+const DATABASE_URI = `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@${process.env.DATABASE_DOMAIN}`;
+
+
+// On crée une application express app avec la méthode express
 const app = express();
+
+async function connect(){ // promesses donc fonction asynchrone
+    try {
+        await mongoose.connect(DATABASE_URI);
+        console.log("Vous êtes connecté à MongoDB !");
+      } catch (e) {
+        console.error(e);
+      }
+}
+
+connect(); // on appelle notre fonciton connect
+
+
 
 
 // Middleware pour traiter les données JSON dans les requêtes
