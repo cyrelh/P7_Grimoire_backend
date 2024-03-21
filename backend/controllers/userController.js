@@ -1,6 +1,6 @@
 
-// Import du modèle User
-const User = require('../models/User');
+// Import du modèle userSchema car on va enregistrer et lire des users dans les 2 middleware signup et login
+const userSchema = require('../models/userSchema');
 
 // Fonction logique métier signup pour l'inscription utilisateur
 exports.signup = (req, res, next) => {
