@@ -12,6 +12,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.1",
     "mongoose": "^8.2.2",
+    "mongoose-unique-validator": "^5.0.0",
     "nodemon": "^3.1.0"
   }
 }
