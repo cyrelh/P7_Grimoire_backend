@@ -60,7 +60,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/books', bookRoutes); // dorénavant tout ce qui passe par api/books ça passera par bookRouter dans le rép routes
-app.use('/api/auth', userRoutes); // dorénavant tout ce qui passe par api/auth ça passera par userRoutes dans le rép routes
+app.use('/api/auth', userRoutes); // '/api/auth' ce sera la racine de out ce qui est route lié&e à l'auth -- dorénavant tout ce qui passe par api/auth ça passera par userRoutes dans le rép routes
 
 // On indique à Express de gérer la ressource images de manière statique via express.static,puis on combine ce chemin via
 //  __dirname(var -g de node représentant le chemin absolu du répertoire script) dès qu'elle recevra une requête vers la route images
