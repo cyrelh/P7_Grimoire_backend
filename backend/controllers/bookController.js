@@ -33,6 +33,14 @@ exports.createBook = (req, res, next) => {
 //app.use('/images', express.static(path.join(__dirname, 'images')));
 
 
+// Récupère un livre en fonction de l'ID fourni dans la requête
+exports.getOneBook = (req, res, next) => {
+	// Recherche le livre dans la base de données avec l'identifiant fourni dans la requête
+	bookSchema.findOne({ _id: req.params.id })
+		.then((book) => res.status(200).json(book)) // Renvoie le livre trouvé avec un statut 200 (OK)
+		.catch((error) => res.status(400).json({ error })); // Gère les erreurs liées à la recherche du livre dans la base de données
+};
+
 // Récupère tous les livres de la base de données
 exports.getAllBooks = (req, res, next) => {
 	// Utilise la méthode find() de Mongoose pour récupérer tous les livres
