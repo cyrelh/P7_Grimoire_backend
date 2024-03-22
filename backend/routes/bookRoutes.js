@@ -13,6 +13,7 @@ const bookCtrl = require('../controllers/bookController');
 router.post('/', auth, multer, bookCtrl.createBook);
 router.get('/', bookCtrl.getAllBooks);
 router.get('/:id', bookCtrl.getOneBook);
+router.put('/:id', auth, multer, bookCtrl.modifyBook); //ajout de multer entre le middleware d’auth et le gestionnaire de notre route
 router.delete('/:id', auth, bookCtrl.deleteBook);
 
 

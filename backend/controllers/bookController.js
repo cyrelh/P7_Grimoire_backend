@@ -51,6 +51,55 @@ exports.getAllBooks = (req, res, next) => {
 		.catch((error) => res.status(400).json({ error })); // Gère les erreurs liées à la récupération des livres depuis la base de données
 };
 
+// Modification d'un livre
+//Récupérer notre objet se fait 2 manières différentes 
+//Selon que la requête soit faite avec un fichier ou pas
+//Il suffit de vérifier sil y a un champ file dans notre requete
+exports.modifyBook = (req, res, next) => {
+	const bookObject = req.file ? { 	// Vérifie si le user a transmis un champ file dans la requête
+				...JSON.parse(req.body.book), // si oui, on récup notre objet en parsant le string
+				// Si un fichier est transmis, crée l'URL de l'image avec le nom de fichier
+				imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`, // et en créant l'image de lurl
+		  } :  { ...req.body };  // Si aucun fichier n'est transmis, on récup l'objet directement dans le corps de la requête 
+
+	//MESURE DE SECURITE
+    // On supprimer le '_userId' venant de la requete pour éviter que qqun malveillant crée un obj à son nom puis le modifie pour le réassigner à qqun dautre
+	delete bookObject._userId;
+
+	// Il nous faut chercher le livre dans la base de données avec l'identifiant fourni dans la requête pour la récup
+    // Pourquoi ? on doit vérifier si c'est bien l'user à qui appartient cet obj qui cherche à le modifier
+	bookSchema.findOne({ _id: req.params.id }) // on récup l'obj en db
+		.then((book) => { // cas succès, on récup l'obj
+			// Et on vérifie si le user actuel (qui nous envoie la req de modification) est le propriétaire du livre
+			if (book.userId !== req.auth.userId) { // si champ userid récupéré en db est diff du userid qui vient de notre token
+				return res.status(403).json({ message: 'Requête non autorisée' }); // alors qqun essaie de modifié un objet qui lui appartient PAS
+			} else { 
+                // on stocke l'url de l'ancienne image qui va être modifiée
+                const oldImageUrl = book.imageUrl;
+                // puis reste qu'à mettre à jour les nouveaux enregistrements
+                // on passe notre filtre --> quel enregistrement à mettre à jour et avec quel objet
+                // objet en question c'est de ce qu'on a récup ds le corp de notre fct avec l'id qui vient des params de l'url
+                bookSchema.updateOne({ _id: req.params.id },{ ...bookObject, _id: req.params.id })
+                  .then(() => {
+                    // supprime l'ancienne image si une nouvelle image est téléchargée
+                    if (req.file) {
+                      // divise l'URL de l'ancienne image en utilisant "/images/" comme délimiteur et récupère le deuxième élément du tableau ainsi créé, donc le nom du fichier
+                      const filename = oldImageUrl.split("/images/")[1];
+                      // supprime le fichier spécifié
+                      fs.unlink(`images/${filename}`, (err) => {
+                        if (err) {
+                          console.error("Erreur de suppression de l'ancienne image :", err);
+                        }
+                      });
+                    }
+                    res.status(200).json({ message: "Livre modifié!" });
+                  })
+                  .catch((error) => res.status(401).json({ error }));
+              }
+            })
+            .catch((error) => res.status(400).json({ error }));
+        };
+
 // Supression d'un livre en fonction de l'ID fourni dans la requête
 exports.deleteBook = (req, res, next) => {
     // Vérifions les droits, on récupère l'obj en base de données avec l'identifiant fourni dans la requête
