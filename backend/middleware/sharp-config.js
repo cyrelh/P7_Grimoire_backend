@@ -1,7 +1,7 @@
 const sharp = require("sharp"); // Importe le module Sharp pour le traitement des images
 const fs = require("fs"); // Importe le module FileSystem pour la manipulation des fichiers
 
-const imageConversion = (req, res, next) => { // Définit une fonction middleware pour la conversion des images
+const imgConversion = (req, res, next) => { // Définit une fonction middleware pour la conversion des images
   // Vérifie si un fichier est téléchargé
   if (!req.file) { // Si aucun fichier n'est téléchargé dans la requête, passe à la prochaine fonction middleware
     return next();
@@ -41,4 +41,4 @@ const imageConversion = (req, res, next) => { // Définit une fonction middlewar
     });
 };
 
-module.exports = imageConversion; // Exporte la fonction middleware imageConversion
+module.exports = imgConversion; // Exporte la fonction middleware imgConversion

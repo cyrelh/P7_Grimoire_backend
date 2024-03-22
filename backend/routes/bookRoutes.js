@@ -1,22 +1,23 @@
 // on importe app.js crée par express via méthode require
-const express = require('express'); 
-//Nous enregistrons les routes dans notre routeur
-const router = express.Router();
-const auth = require('../middleware/auth');
-// on importe les fonctions correctement
-const multer = require('../middleware/multer-config');
+const express = require('express');
 
 // On importe la logique métier de bookController
 const bookCtrl = require('../controllers/bookController');
+const auth = require('../middleware/auth');
+const multer = require('../middleware/multer-config');
+const imgConversion = require('../middleware/sharp-config');
+
+//Nous enregistrons les routes dans notre routeur
+const router = express.Router();
 
 
-router.post('/', auth, multer, bookCtrl.createBook);
 router.get('/', bookCtrl.getAllBooks);
+
 router.get('/:id', bookCtrl.getOneBook);
-router.put('/:id', auth, multer, bookCtrl.modifyBook); //ajout de multer entre le middleware d’auth et le gestionnaire de notre route
+router.post('/', auth, multer, imgConversion,  bookCtrl.createBook);
+router.put('/:id', auth, multer, imgConversion, bookCtrl.modifyBook); //ajout de multer entre le middleware d’auth et le gestionnaire de notre route
 router.delete('/:id', auth, bookCtrl.deleteBook);
-
-
+router.post('/:id/rating', auth, bookCtrl.ratingBook);
 
 
 module.exports = router;

@@ -134,3 +134,54 @@ exports.deleteBook = (req, res, next) => {
 			res.status(500).json({ error });
 		});
 };
+
+// notation
+exports.ratingBook = (req, res, next) => {
+    // on récup les valeurs userId et rating du corps de la requête
+    const { userId, rating } = req.body;
+  
+    // on vérifie que la note est comprise entre 0 et 5
+    if (rating < 0 || rating > 5) {
+      return res
+        .status(400)
+        .json({ message: "La note doit être comprise entre 0 et 5" });
+    }
+  
+    // on récupère l'obj en base de données avec l'identifiant fourni dans la requête
+    bookSchema.findOne({ _id: req.params.id })
+      .then((book) => {
+        // On vérifie si l'utilisateur a déjà noté ce livre
+        const userAlreadyRating = book.ratings.find((r) => r.userId === userId);
+        if (userAlreadyRating) {
+          return res.status(403).json(new Error());
+        }
+  
+        // puis on ajoute la nouvelle note au tableau "ratings"
+        book.ratings.push({ userId, grade: rating });
+        // on fait le calul du nombre total de livres notés
+        const totalRatings = book.ratings.length;
+  
+        // on fait le calul de la somme totale des notes
+        let sumRatings = 0;
+        for (const ratingEntry of book.ratings) {
+          const ratingValue = ratingEntry.grade; 
+          sumRatings += ratingValue;
+        }
+  
+        // on fait le calul de la nouvelle moyenne des notes
+        const averageRatingBeforeRounding = sumRatings / totalRatings;
+  
+        // Méthode pour arrondir la moyenne des notes à deux décimales
+        const averageRatingRounded = parseFloat(averageRatingBeforeRounding.toFixed(2));
+  
+        // On met à jour la moyenne des notes dans book
+        book.averageRating = averageRatingRounded;
+  
+        // On enregistre les modifications en renvoyant le livre mis à jour avec la méthode save() + promesses
+        return book
+          .save()
+          .then((updatedBook) => res.status(200).json(updatedBook))
+          .catch((error) => res.status(400).json({ error }));
+      })
+      .catch((error) => res.status(500).json({ error })); // on gère cas d'erreurs éventuels
+  };
