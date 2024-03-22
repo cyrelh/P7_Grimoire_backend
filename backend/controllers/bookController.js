@@ -1,4 +1,4 @@
-const Book = require('../models/bookSchema');
+const bookSchema = require('../models/bookSchema');
 
 // Création ou ajout d'un nouveau livre
 exports.createBook = (req, res, next) => {
@@ -12,7 +12,7 @@ exports.createBook = (req, res, next) => {
 	
     
 	//2- On crée nouvelle instance du modèle booskSchema -combine les propriétés de bookObject avec l'ID de l'utilisateur et l'URL de l'image
-	const book = new Book({
+	const book = new bookSchema ({
 	...bookObject, // avec ce qui a été passé en 1- moins les _userId et _id
 	userId: req.auth.userId, // les userId On les extrait de l'obj req grâce à notre middleware
     // et on va générer l'URL de l'img MAIS mais multer ne ns passe que le nom du fichier
@@ -31,4 +31,12 @@ exports.createBook = (req, res, next) => {
 // car c'est notre serveur qui gère absoluement toutes les req
 // donc il nous faut ajouter un route pour géréer ça dans app.js 
 //app.use('/images', express.static(path.join(__dirname, 'images')));
-    
+
+
+// Récupère tous les livres de la base de données
+exports.getAllBooks = (req, res, next) => {
+	// Utilise la méthode find() de Mongoose pour récupérer tous les livres
+	bookSchema.find()
+		.then((books) => res.status(200).json(books)) // Envoie la liste des livres avec un statut 200 (OK)
+		.catch((error) => res.status(400).json({ error })); // Gère les erreurs liées à la récupération des livres depuis la base de données
+};

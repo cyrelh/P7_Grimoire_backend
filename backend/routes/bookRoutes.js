@@ -1,8 +1,8 @@
 // on importe app.js crée par express via méthode require
 const express = require('express'); 
-const auth = require('../middleware/auth');
 //Nous enregistrons les routes dans notre routeur
 const router = express.Router();
+const auth = require('../middleware/auth');
 // on importe les fonctions correctement
 const multer = require('../middleware/multer-config');
 
@@ -11,6 +11,8 @@ const bookCtrl = require('../controllers/bookController');
 
 
 router.post('/', auth, multer, bookCtrl.createBook);
+router.get('/', bookCtrl.getAllBooks);
+
 
 
 module.exports = router;
