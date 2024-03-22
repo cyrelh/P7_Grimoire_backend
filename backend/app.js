@@ -62,10 +62,13 @@ app.use((req, res, next) => {
 app.use('/api/books', bookRoutes); // dorénavant tout ce qui passe par api/books ça passera par bookRouter dans le rép routes
 app.use('/api/auth', userRoutes); // '/api/auth' ce sera la racine de out ce qui est route lié&e à l'auth -- dorénavant tout ce qui passe par api/auth ça passera par userRoutes dans le rép routes
 
-// On indique à Express de gérer la ressource images de manière statique via express.static,puis on combine ce chemin via
-//  __dirname(var -g de node représentant le chemin absolu du répertoire script) dès qu'elle recevra une requête vers la route images
+
 app.use('/images', express.static(path.join(__dirname, 'images')));
+// on rajoute une route pour images
+// on utilise middleware static fourni par Express
+// on récup le répertoire dans lequel s'exécute notre serveur 
+// et y concaténer le répertoire 'images' pour obtenir le chemin complet sur le disk
 
 
-// On va exporter cette application Express pour qu'on puisse y accéder depuis les autres fichiers de notre projet et notamment notre serveur node
+// On exporte cette app Express pour qu'on puisse y accéder depuis les autres fichiers de notre projet et notamment notre serveur node
 module.exports = app;
