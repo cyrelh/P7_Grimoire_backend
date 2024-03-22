@@ -87,3 +87,7 @@ exports.login = (req, res, next) => {
 			res.status(500).json({ error });
 		});
 };
+
+// userSchema.deleteMany({}).then(() => {
+//         console.log('Supression de tous les users dans la Database')
+//       });

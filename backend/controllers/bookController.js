@@ -197,3 +197,8 @@ exports.getBestBooks = (req, res, next) => {
       .then((books) => res.status(200).json(books)) // cas où réussite de la recherche
       .catch((error) => res.status(400).json({ error })); // cas pour gérer erreur éventuelle lors de la recherche
   };
+
+
+    //       bookSchema.deleteMany({}).then(() => { // vider la base de données
+    //     console.log('Supression de tous les Books dans la Database')
+    //   });
