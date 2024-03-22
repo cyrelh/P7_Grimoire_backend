@@ -185,3 +185,15 @@ exports.ratingBook = (req, res, next) => {
       })
       .catch((error) => res.status(500).json({ error })); // on gère cas d'erreurs éventuels
   };
+
+  // affichage des 3 livres les mieux notés
+exports.getBestBooks = (req, res, next) => {
+    // recherche dans tous les livres
+    // trie les résultats en fonction de la propriété averageRating par ordre décroissant donc les mieux notés en premier
+    // limité à 3 résultats
+    bookSchema.find() //méthode find() de Mongoose pour récupérer tous les livres DE LA DB
+      .sort({ averageRating: -1 }) //pour trier les livres en fonction de la note moyenne (en décroissant)
+      .limit(3) // pas plus que 3 livres les mieux notés 
+      .then((books) => res.status(200).json(books)) // cas où réussite de la recherche
+      .catch((error) => res.status(400).json({ error })); // cas pour gérer erreur éventuelle lors de la recherche
+  };
