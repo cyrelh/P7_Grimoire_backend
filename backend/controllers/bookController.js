@@ -1,4 +1,6 @@
 const bookSchema = require('../models/bookSchema');
+const fs = require("fs"); // Importe le module FileSystem pour la manipulation des fichiers
+
 
 // Création ou ajout d'un nouveau livre
 exports.createBook = (req, res, next) => {
@@ -41,10 +43,45 @@ exports.getOneBook = (req, res, next) => {
 		.catch((error) => res.status(400).json({ error })); // Gère les erreurs liées à la recherche du livre dans la base de données
 };
 
-// Récupère tous les livres de la base de données
+// Récupération de tous les livres de la base de données
 exports.getAllBooks = (req, res, next) => {
 	// Utilise la méthode find() de Mongoose pour récupérer tous les livres
 	bookSchema.find()
 		.then((books) => res.status(200).json(books)) // Envoie la liste des livres avec un statut 200 (OK)
 		.catch((error) => res.status(400).json({ error })); // Gère les erreurs liées à la récupération des livres depuis la base de données
+};
+
+// Supression d'un livre en fonction de l'ID fourni dans la requête
+exports.deleteBook = (req, res, next) => {
+    // Vérifions les droits, on récupère l'obj en base de données avec l'identifiant fourni dans la requête
+	bookSchema.findOne({ _id: req.params.id }) 
+		.then((book) => { //en cas de succès
+			// Vérifie si le useriD enregistré en db correspond bien au userId que nous récupérons du token
+			if (book.userId != req.auth.userId) {
+				// Si le userId n'est pas autorisé, renvoie une réponse non autorisée
+				res.status(401).json({ message: 'Non autorisé !' });
+			} else {
+				// Si le user est autorisé, extrait le nom de fichier de l'URL de l'image
+				const filename = book.imageUrl.split('/images/')[1]; // grâce à un split autour du répertoire images 
+                // car on sait que c'est là et le nom de fichier est juste après
+
+				// Ensuite onpeut faire la suppression du fichier correspondant à l'image du livre
+				fs.unlink(`images/${filename}`, () => { // en utilsant méthode unlink() de fs importée au-dessus, av notre chemin images + nom de fichier 
+					// Ensuite on gère le callback --> crée un méthode qui va etre appelée une fois que la suppression aura eu lieu
+                    // la suppr ds le systeme de fichier est asynchrone
+                   
+                    // Maintenant on peut supprimer le livre de la base de données
+					bookSchema.deleteOne({ _id: req.params.id }) // _id: req.params.id sert de sélecteur ou filtre
+						.then(() => {
+							// Renvoie une réponse indiquant que l'objet a été supprimé avec succès
+							res.status(200).json({ message: 'Objet supprimé !' });
+						})
+						.catch((error) => res.status(401).json({ error })); // on gère le cas erreur
+				});
+			}
+		})
+		.catch((error) => {
+			// Gère les erreurs liées à la recherche du livre dans la base de données
+			res.status(500).json({ error });
+		});
 };
