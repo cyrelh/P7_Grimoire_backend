@@ -19,7 +19,7 @@ const storage = multer.diskStorage({ // méthode diskStorage() pour dire qu'on v
 	// 2e élément à cet objet de config "filname" : qui expique à multer quel nom de fichier lors du téléchargement
 	filename: (req, file, callback) => {
 		// on va génrer le nouveau nom du fichier en remplaçant les espaces par des underscores dans le nom d'origine
-		const name = file.originalname.split(' ').join('_'); // méthode split atour des espace créant un tableau ave cles différents mots du nom de fichier
+		const name = file.originalname.split(' ').join('_').replace(/\.[^/.]+$/, ""); // méthode split atour des espace créant un tableau ave cles différents mots du nom de fichier
         // et en appelant .join en rejoignant ce tableau en un seul string avec des _ à la place des espaces
 		
         const extension = MIME_TYPES[file.mimetype]; // On crée l'extension du fichier qui sera l'élément de notre dictionnaire qui est le MIME_TYPES du fichier envoyé par le frontend
@@ -27,7 +27,7 @@ const storage = multer.diskStorage({ // méthode diskStorage() pour dire qu'on v
         // ajout d'un time stamp pour le rendre le + unique possible à la ms vai Date.now() Et ajout d'un . ET l'extension du fichier
         // on a donc générer un nom de fichier suffisamment uniuqe pour notre utilisation
 
-	},
+	}
 });
 
 // On exporte la configuration multer avec le stockage configuré
