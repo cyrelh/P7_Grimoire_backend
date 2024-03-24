@@ -30,7 +30,6 @@ const imgConversion = (req, res, next) => { // Définit une fonction middleware 
       // Supprime le fichier d'origine du système de fichier après la conversion en WebP
       fs.unlink(req.file.path, (err) => {
         if (err) {// on gère les erreurs lors du redimensionnement et de la conversion
-          console.error("Erreur lors de la suppression du fichier original:", err); 
         }
         next();
       });
