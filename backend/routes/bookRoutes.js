@@ -15,7 +15,7 @@ router.get('/', bookCtrl.getAllBooks);
 router.get('/bestrating', bookCtrl.getBestBooks);
 router.get('/:id', bookCtrl.getOneBook);
 router.post('/', auth, multer, imgConversion,  bookCtrl.createBook);
-router.put('/:id', auth, multer, imgConversion, bookCtrl.modifyBook); //ajout de multer entre le middleware d’auth et le gestionnaire de notre route
+router.put('/:id', auth, multer, imgConversion, bookCtrl.modifyBook);
 router.delete('/:id', auth, bookCtrl.deleteBook);
 router.post('/:id/rating', auth, bookCtrl.ratingBook);
 

@@ -20,10 +20,10 @@ const normalizePort = (val) => {
 // On récupère le port à partir de la variable d'environnement ou utilise le port 4000 par défaut
 const port = normalizePort(process.env.PORT || '4000');
 
-// on doit dire à l'application express sur quel port elle doit tourner avec la méthode app.set (on configure le port de l'application Expres)
+// on doit dire à l'application express sur quel port elle doit tourner avec la méthode app.set (on configure le port de l'application Express)
 app.set('port', port);
 
-//la fonction errorHandler  recherche les différentes erreurs et les gère de manière appropriée lors de la création du serveur
+//la fonction errorHandler  recherche les erreurs et les gère de manière appropriée lors de la création du serveur
 //Elle est ensuite enregistrée dans le serveur
 
 const errorHandler = (error) => {
@@ -47,7 +47,7 @@ const errorHandler = (error) => {
 	}
 };
 
-// On crée un serveur HTTP en lui demandant de lui passer cette app (l'application créee par Express) 
+// On crée un serveur HTTP en lui demandant de lui passer l'application créee par Express
 // avec la méthode createServer du package http
 const server = http.createServer(app);
 
@@ -55,7 +55,7 @@ const server = http.createServer(app);
 server.on('error', errorHandler);
 
 // Écouteur d'événements "listening" du serveur est enregistré 
-// consignant le port ou le canal nommé sur lequel le serveur s'exécute dans la console
+// consignant le port sur lequel le serveur s'exécute dans la console
 server.on('listening', () => {
 	const address = server.address();
 	const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
@@ -65,8 +65,8 @@ server.on('listening', () => {
 // Puis on effectue l'écoute du serveur sur le port défini
 server.listen(port);
 
-
+// Résumé
 // Notre server node est bien en train de retourner notre app express
-//Configuration et création du serveur HTTP en utilisant Node.js et Express réalisées
+// Configuration et création du serveur HTTP en utilisant Node.js et Express réalisées
 // Port correctement configurée par fonction normalizePort
 // errorHandler fournit une gestion des erreurs pour éviter les problèmes potentiels lors du démarrage du serveur

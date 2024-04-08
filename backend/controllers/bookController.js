@@ -29,9 +29,9 @@ exports.createBook = (req, res, next) => {
     .catch((error) => {
         res.status(400).json({ error: "Erreur lors de l'enregistrement !" });
     });
-};// si erreur 404, c'est lié au fait que la req vers notre répertoire images n'est pas gérée
+};// si erreur 400, c'est lié au fait que la req vers notre répertoire images n'est pas gérée
 // car c'est notre serveur qui gère absoluement toutes les req
-// donc il nous faut ajouter un route pour géréer ça dans app.js 
+// donc il nous faut ajouter un route pour gérer ça dans app.js 
 //app.use('/images', express.static(path.join(__dirname, 'images')));
 
 
@@ -120,7 +120,7 @@ exports.deleteBook = (req, res, next) => {
                     // la suppr ds le systeme de fichier est asynchrone
                    
                     // Maintenant on peut supprimer le livre de la base de données
-					bookSchema.deleteOne({ _id: req.params.id }) // _id: req.params.id sert de sélecteur ou filtre
+					bookSchema.deleteOne({ _id: req.params.id }) // _id: req.params.id sert de sélecteur
 						.then(() => {
 							// Renvoie une réponse indiquant que l'objet a été supprimé avec succès
 							res.status(200).json({ message: 'Objet supprimé !' });
@@ -171,8 +171,8 @@ exports.ratingBook = (req, res, next) => {
         // on fait le calul de la nouvelle moyenne des notes
         const averageRatingBeforeRounding = sumRatings / totalRatings;
   
-        // Méthode pour arrondir la moyenne des notes à deux décimales
-        const averageRatingRounded = parseFloat(averageRatingBeforeRounding.toFixed(2));
+        // Méthode pour arrondir la moyenne des notes à 0 décimales
+        const averageRatingRounded = parseFloat(averageRatingBeforeRounding.toFixed(0));
   
         // On met à jour la moyenne des notes dans book
         book.averageRating = averageRatingRounded;
@@ -199,6 +199,6 @@ exports.getBestBooks = (req, res, next) => {
   };
 
 
-    //       bookSchema.deleteMany({}).then(() => { // vider la base de données
-    //     console.log('Supression de tous les Books dans la Database')
-    //   });
+      //     bookSchema.deleteMany({}).then(() => { // vider la base de données
+      //   console.log('Supression de tous les Books dans la Database')
+      // });

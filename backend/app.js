@@ -28,19 +28,15 @@ async function connect(){ // promesses donc fonction connect() asynchrone
         console.error(e);
       }
 }
-
 connect(); // on appelle notre fonciton connect
-
-
-
 
 // capable de traiter les doonénes body en JSON dans les requêtes
 app.use(express.json());
 
-// Anti-CORS errors
-// Middleware pour gérer les CORS (Cross-Origin Resource Sharing) --> système de sécurité qui empêche requêtes malveillantes d'accéder à des ressources sensibles
-//Pour cela, nous devons ajouter des headers sur objet res réponse (méthode setHeader) à notre objet  response  qu’on renvoie au navigateur 
-// pour lui dire TOUT VA BIEN : vous pouvez utiliser cette API
+// Middleware pour gérer les CORS --> système de sécurité qui empêche requêtes malveillantes d'accéder à des ressources sensibles
+// solutions --> ajout des headers sur objet réponse (méthode setHeader)
+// TOUT CA VA PERMETTRE à l’app d’accéder sans problèmes à l’API
+
 app.use((req, res, next) => {
 	// On dit que l'Origin qui a le droit d'accéder à notre API c'est tout le monde d'où '*'
 	res.setHeader('Access-Control-Allow-Origin', '*');
@@ -54,21 +50,20 @@ app.use((req, res, next) => {
 		'Access-Control-Allow-Methods',
 		'GET, POST, PUT, DELETE, PATCH, OPTIONS'
 	);
-	//TOUT CA VA PERMETTRE à l’app d’accéder sans problèmes à l’API
     // Ne pas oublier next pour passer l’éxécution au middleware d’après
 	next();
 });
 
 app.use('/api/books', bookRoutes); // dorénavant tout ce qui passe par api/books ça passera par bookRouter dans le rép routes
-app.use('/api/auth', userRoutes); // '/api/auth' ce sera la racine de out ce qui est route lié&e à l'auth -- dorénavant tout ce qui passe par api/auth ça passera par userRoutes dans le rép routes
+app.use('/api/auth', userRoutes);
 
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 // on rajoute une route pour images
 // on utilise middleware static fourni par Express
 // on récup le répertoire dans lequel s'exécute notre serveur 
-// et y concaténer le répertoire 'images' pour obtenir le chemin complet sur le disk
+// on y concaténe le répertoire 'images' pour obtenir le chemin complet
 
 
-// On exporte cette app Express pour qu'on puisse y accéder depuis les autres fichiers de notre projet et notamment notre serveur node
+// On exporte cette app Express pour qu'on puisse y accéder depuis les autres fichiers de notre projet et surtout notre serveur node
 module.exports = app;

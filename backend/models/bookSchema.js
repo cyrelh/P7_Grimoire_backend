@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');//Pas besoin de mettre un champ pour l'Id puisqu'il est automatiquement généré par Mongoose
+const mongoose = require('mongoose');
 
 // On crée un schéma de données qui contient les champs souhaités 
 const bookSchema = mongoose.Schema({
@@ -20,8 +20,6 @@ const bookSchema = mongoose.Schema({
 });
 
 module.exports = mongoose.model('bookSchema', bookSchema);
-//on exporte ce schéma en tant que modèle Mongoose appelé bookSchema 
-//le rendant par là même disponible pour notre application Express
-
 // La méthode Schéma de Mongoose permet de créer un schéma de données pour la base de données MongoDB
 //La méthode model transforme ce modèle en modèle utilisable
+//on exporte ce schéma en tant que modèle Mongoose appelé bookSchema 

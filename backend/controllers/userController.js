@@ -2,8 +2,6 @@
 const bcrypt = require('bcrypt'); 
 //package pour créer et vérifier les tokens d'authentification
 const jwt = require('jsonwebtoken');
-
-
 // Import du modèle userSchema car on va enregistrer et lire des users dans les 2 middleware signup et login
 const userSchema = require('../models/userSchema');
 
@@ -11,7 +9,7 @@ const userSchema = require('../models/userSchema');
 exports.signup = (req, res, next) => {
     	// Appel de la fonction pour hasher mdp
 	bcrypt.hash(req.body.password, 10) // on lui passe mdp corps de la requête qui sera passée par le frontend
-    //salt :nb de fois qu'on execute de l'algo de hashing --> ici 10 tours suffit pour mdp secured (+tours algo + tps)
+    //execute de l'algo de hashing --> ici 10 tours suffit pour mdp secured (+tours algo + tps)
     // Méthode async pour recup le hash de mdp puis l'enregistrer dans un nouveau user crée danss la db
     .then((hash) => {
         // Création du nouvel utilisateur avec notre modèle mongoose userSchema
@@ -46,7 +44,7 @@ exports.login = (req, res, next) => {
 				res.status(401).json({ message: 'Paire identifiant/mot de passe incorrecte' });
 				
 			} else { // sinon s'il y a une valeur et donc dans le cas où l'utilisateur existe (est enregistré dans notre db)
-				// Appel de la méthode compare de bcrypt pour récupérer le mdp de la BDD et celui saisi par l'utilisateur
+				// Appel de la méthode compare de bcrypt pour récupérer le mdp de la db et celui saisi par l'utilisateur
 				bcrypt
 					.compare(req.body.password, user.password)
                      //Méthode compare de bcrypt - on compare ce qui a été transmis par notre frontend client et ensuite notre mdp de la db
@@ -57,16 +55,15 @@ exports.login = (req, res, next) => {
 							res.status(401).json({ message: 'Paire identifiant/mot de passe incorrecte' });
 							// Dans le cas ou l'utilisateur saisi le bon mdp
 						} else {
-							// On retourne l'objet User contenant les infos nécessaires àl'authentification des req émises par le client 
-                            //donc ceux du userId et le token
+							// On retourne l'objet User contenant les infos à l'authentification des req émises par le client 
+                            //CEUX du userId + le token
 							res.status(200).json({                                
                                 userId: user._id,
-                                // Appel de la fonction .sign() de jwt pour encoder un Token, elle prend plusieurs arguments
-								
+                                // Appel de la fonction .sign() de jwt pour encoder un Token, elle prend 3 arguments
                                 token: jwt.sign( 
 									// 1er argument : données que l'on veut encoder à l'intérieur de token (payload)
-                                    // Création obj avec le userId qui sera l'identifiant utilisateur du User ainsi
-									// on est sûr que cette req est bien celle de userId au-dessus
+                                    // Création obj avec le userId qui sera l'identifiant utilisateur du User
+									// Comme ça on est sûr que cette req est bien celle de userId au-dessus
 									{ userId: user._id },
 									// 2e argument c'est la clé secrète d'encodage
 									'RANDOM_TOKEN_SECRET',
