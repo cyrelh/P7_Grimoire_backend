@@ -33,7 +33,7 @@ exports.signup = (req, res, next) => {
 
 // Fonction logique métier login pour la connexion utilisateur
 exports.login = (req, res, next) => {
-    userSchema.findOne({ email: req.body.email }) // on utilise la méthode findOne et on lui passe un objet qui va servir de filtre
+    userSchema.findOne({ email: req.body.email }) // on utilise la méthode findOne et on lui passe un objet qui va servir de sélecteur
     // ctd servir de sélecteur avec unchamp email et la valeur qui nous a été transmise par le client
 
     // il faut gérer 2 cas car c'est une promesse retournée par findOne
